@@ -1,7 +1,7 @@
 {
   "name": "@hyperswarm/connect-test",
   "version": "1.0.0",
-  "description": "Create connections with peers in the 'connect-test' topic (Demo) ",
+  "description": "Create connections with peers in the 'connect-test' topic (Demo)",
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
