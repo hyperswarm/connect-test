@@ -1,0 +1,29 @@
+{
+  "name": "@hyperswarm/connect-test",
+  "version": "1.0.0",
+  "description": "Create connections with peers in the 'connect-test' topic (Demo) ",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hyperswarm/connect-test.git"
+  },
+  "keywords": [
+    "hyperswarm",
+    "test",
+    "demo"
+  ],
+  "author": "Paul Frazee <pfrazee@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hyperswarm/connect-test/issues"
+  },
+  "homepage": "https://github.com/hyperswarm/connect-test#readme",
+  "dependencies": {
+    "@hyperswarm/network": "0.0.0",
+    "figures": "^2.0.0"
+  }
+}
