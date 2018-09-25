@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/hyperswarm/connect-test#readme",
   "dependencies": {
-    "@hyperswarm/network": "0.0.0",
+    "@hyperswarm/network": "~0.0.1",
     "figures": "^2.0.0"
   }
 }

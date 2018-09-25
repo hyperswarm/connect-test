@@ -18,7 +18,7 @@ console.log('')
 console.log(figures.play, 'Testing hole-punchability...')
 net.discovery.holepunchable((err, yes) => {
   if (err) console.error(figures.warning, 'Error while testing for holepunch capability', err)
-  else if (yes) console.log(figures.tick, 'Your network is hole-punchable')
+  else if (yes) console.log(figures.tick, 'Your network is hole-punchable!')
   else console.log(figures.cross, 'Your network is not hole-punchable. This will degrade connectivity.')
 
   net.on('connection', function (socket, info) {
