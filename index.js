@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const network = require('@hyperswarm/network')
 const crypto = require('crypto')
 const figures = require('figures')
