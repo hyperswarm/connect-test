@@ -29,6 +29,7 @@ net.discovery.holepunchable((err, yes) => {
   console.log(figures.play, 'Joining hyperswarm under the sha256(\'connect-test\') topic')
   console.log(figures.info, 'Waiting for connections...')
   net.join(k, {announce: true, lookup: true})
+  console.log('')
 })
 
 process.once('SIGINT', function () {
