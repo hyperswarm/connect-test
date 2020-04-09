@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 
-const network = require('@hyperswarm/network')
+const { inspect } = require('util')
+const hyperswarm = require('hyperswarm')
 const crypto = require('crypto')
 const figures = require('figures')
 
-const net = network()
+const swarm = hyperswarm()
+const topic = process.argv[2] ? process.argv[2] : 'connect-test'
 
 const k = crypto.createHash('sha256')
-  .update('connect-test')
+  .update(topic)
   .digest()
 
 console.log(figures.star, ' ', figures.star, ' ', figures.star, ' ', figures.star, ' ', figures.star, ' ', figures.star)
@@ -17,27 +19,68 @@ console.log('  ' + figures.star, ' ', figures.star, ' ', figures.star, ' ', figu
 console.log(figures.star, ' ', figures.star, ' ', figures.star, ' ', figures.star, ' ', figures.star, ' ', figures.star)
 console.log('')
 
-console.log(figures.play, 'Testing hole-punchability...')
-net.discovery.holepunchable((err, yes) => {
-  if (err) console.error(figures.warning, 'Error while testing for holepunch capability', err)
-  else if (yes) console.log(figures.tick, 'Your network is hole-punchable!')
-  else console.log(figures.cross, 'Your network is not hole-punchable. This will degrade connectivity.')
+function Peer (peer) {
+  return peer && `${peer.host}:${peer.port}`
+}
 
-  net.on('connection', function (socket, info) {
-    console.log(figures.pointerSmall, 'New connection!', info)
-  })
+console.log(figures.play, `Joining hyperswarm under the sha256(${topic}) topic`, k.toString('hex'))
 
-  console.log('')
-  console.log(figures.play, 'Joining hyperswarm under the sha256(\'connect-test\') topic')
-  console.log(figures.info, 'Waiting for connections...')
-  net.join(k, {announce: true, lookup: true})
-  console.log('')
+swarm.on('error', function (err) {
+  console.error(figures.cross, 'There was an error', err)
 })
+
+swarm.on('peer', function (peer) {
+  console.log(figures.pointerSmall, 'New peer!', Peer(peer))
+})
+
+swarm.on('connection', function (socket, info) {
+  const {
+    priority,
+    status,
+    retries,
+    peer,
+    client
+  } = info
+  console.log('new connection!', `
+    priority: ${priority}
+    status: ${status}
+    retries: ${retries}
+    client: ${client}
+    peer: ${!peer ? peer : `
+      ${inspect(peer, { indentationLvl: 4 }).slice(2, -2)}
+      `}
+    `)
+  process.stdin.pipe(socket).pipe(process.stdout)
+})
+
+swarm.on('disconnection', function (socket, info) {
+  console.log(figures.cross, 'Connection has been dropped', Peer(info.peer))
+})
+
+swarm.on('peer-rejected', function (peer) {
+  console.log(figures.cross, 'Peer rejected!', Peer(peer))
+})
+
+swarm.on('updated', function (peer) {
+  console.log(figures.tick, 'Successfully updated')
+})
+
+swarm.join(k, {
+  announce: true,
+  lookup: true
+}, (err) => {
+  if (err) console.error(figures.warning, 'Error while testing for connectivity', err)
+
+  var holepunchable = swarm.holepunchable()
+  if (holepunchable) console.log(figures.tick, 'Your network is hole-punchable!')
+
+  console.log(figures.info, 'Waiting for connections...')
+})
+
 
 process.once('SIGINT', function () {
   console.log('Shutting down ...')
-  net.discovery.destroy()
-  net.discovery.on('close', function () {
+  swarm.destroy(function () {
     process.exit()
   })
 })
